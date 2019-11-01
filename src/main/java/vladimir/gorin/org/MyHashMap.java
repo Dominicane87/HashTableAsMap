@@ -24,16 +24,24 @@ public class MyHashMap {
 
     public void add(Object key, Object value) {
         //Think about increasing massive and evolving
-
+        if (key==null) { throw new NullPointerException("The key for addLast() is null."); }
         MyObjectEntry myObjectEntry = new MyObjectEntry(key, value);
-        getList(key).add(myObjectEntry);
+
+        if (!isExistKey(key)) {
+            getList(key).add(myObjectEntry);
+        } else {throw new IllegalMonitorStateException("This key is already exist");}
 
     }
 
     public void update(Object key, Object value) {
-        MyObjectEntry isFinding = new MyObjectEntry(key, value);
-        MyObjectEntry isInHash = getList(key).findByKey(isFinding);
+        MyObjectEntry isInHash = getMyObject(key);
         isInHash.setValue(value);
+    }
+
+    public MyObjectEntry getMyObject(Object key){
+        MyObjectEntry isFinding = new MyObjectEntry(key, null);
+        MyObjectEntry isInHash = getList(key).findByKey(isFinding);
+        return isInHash;
     }
 
     public void delete(Object key) {
@@ -43,6 +51,7 @@ public class MyHashMap {
 
 
     public boolean isExistKey(Object key) {
+        if (key==null) throw new IllegalMonitorStateException("Input key is null");
         HashSet<MyObjectEntry> set = entrySet();
         for (MyObjectEntry myObjectEntry : set) {
             if (myObjectEntry.getKey().equals(key)) {

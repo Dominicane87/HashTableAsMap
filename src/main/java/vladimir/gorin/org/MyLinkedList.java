@@ -30,6 +30,7 @@ public class MyLinkedList <T> implements Iterable<T> {
     public T findByKey(T item){
         Node prev = first;
         Node curr = first;
+        if (curr==null) throw new IllegalMonitorStateException("The item searching by key doesn't exist");
         while (curr.next!=null||curr==last){
             if (curr.data.equals(item)){
                 return curr.data;
