@@ -1,16 +1,17 @@
 package vladimir.gorin.org;
 
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
 
 public class MyHashMap {
     private MyLinkedList<MyObjectEntry>[] hashMap;
-    static final double capacityLimit = 0.75;
+    static final double CAPACITY_LIMIT = 0.75;
+    static final int DEEPNESS_LIST =16;
+    public int AMOUNT_BUCKETS =5;
+
     int count = 0;
 
     MyHashMap() {
-        hashMap = new MyLinkedList[5];
+        hashMap = new MyLinkedList[AMOUNT_BUCKETS];
         for (int i=0;i<hashMap.length;i++){
             hashMap[i]=new MyLinkedList<>();
         }
@@ -22,13 +23,29 @@ public class MyHashMap {
         return myObjectEntries;
     }
 
+
+    public <myHashMap> void increaseMyHashMap(MyLinkedList<MyObjectEntry>[] hashMap ){
+        AMOUNT_BUCKETS=AMOUNT_BUCKETS*2;
+        MyLinkedList<MyObjectEntry>[] tmpHashMap = new MyLinkedList[AMOUNT_BUCKETS];
+        for (int i=0;i<tmpHashMap.length;i++){
+            tmpHashMap[i]=new MyLinkedList<>();
+        }
+        for (int i=0;i<hashMap.length;i++){
+            tmpHashMap[i]=hashMap[i];
+        }
+        hashMap=tmpHashMap;
+    }
+
     public void add(Object key, Object value) {
         //Think about increasing massive and evolving
+        if (size()>CAPACITY_LIMIT*AMOUNT_BUCKETS*DEEPNESS_LIST) increaseMyHashMap(hashMap);
+
         if (key==null) { throw new NullPointerException("The key for addLast() is null."); }
         MyObjectEntry myObjectEntry = new MyObjectEntry(key, value);
 
         if (!isExistKey(key)) {
             getList(key).add(myObjectEntry);
+            count++;
         } else {throw new IllegalMonitorStateException("This key is already exist");}
 
     }
@@ -46,7 +63,8 @@ public class MyHashMap {
 
     public void delete(Object key) {
         MyObjectEntry isDeleting = new MyObjectEntry(key, null);
-        getList(key).remove(isDeleting);
+       Boolean result = getList(key).remove(isDeleting);
+       if (result) count--;
     }
 
 
@@ -72,10 +90,10 @@ public class MyHashMap {
     }
 
     public int size() {
-        int count = 0;
-        for (MyLinkedList<MyObjectEntry> myObjectEntries : hashMap) {
-            count += myObjectEntries.size();
-        }
+//        int count = 0;
+//        for (MyLinkedList<MyObjectEntry> myObjectEntries : hashMap) {
+//            count += myObjectEntries.size();
+//        }
         return count;
     }
 

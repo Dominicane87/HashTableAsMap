@@ -8,7 +8,13 @@ public class MyHashMapTest {
     private MyHashMap myMap=new MyHashMap();
 
 
-
+    @Test
+    public  void increaseTable(){
+        for (int i = 0; i <66 ; i++) {
+          myMap.add(i,1);  
+        }
+        assertEquals(myMap.AMOUNT_BUCKETS,10);
+    }
     @Test
     public void add() {
         myMap.add("1","2");
