@@ -2,34 +2,34 @@ package vladimir.gorin.org;
 
 import java.util.Objects;
 
-public class MyObjectEntry {
-   private Object key;
-    private Object value;
+public class MyObjectEntry<K,V> {
+   private K key;
+    private V value;
 
-    public MyObjectEntry(Object key, Object value) {
+    MyObjectEntry(K key, V value) {
         this.key = key;
         this.value = value;
     }
-    public boolean equalsKey(Object key){
+    public boolean equalsKey(K key){
         return this.key.equals(key);
     }
-    public boolean equalsValue(Object value){
+    public boolean equalsValue(V value){
         return  this.value.equals(value);
     }
 
-    public Object getKey() {
+    Object getKey() {
         return key;
     }
 
-    public Object getValue() {
+    Object getValue() {
         return value;
     }
 
-    public void setKey(Object key) {
+    public void setKey(K key) {
         this.key = key;
     }
 
-    public void setValue(Object value) {
+    void setValue(V value) {
         this.value = value;
     }
 

@@ -18,13 +18,11 @@ public class MyHashMapTest {
     @Test
     public void add() {
         myMap.add("1","2");
-        assertTrue(myMap.isExistKey("1"));
+        assertTrue(myMap.containsKeyMyHashMap("1"));
         try {
             myMap.add(null,"2");
             myMap.add("1","3");
-        } catch (NullPointerException e){
-            assertTrue(true);
-        }catch (IllegalMonitorStateException e){
+        } catch (NullPointerException | IllegalMonitorStateException e){
             assertTrue(true);
         }
 
@@ -34,24 +32,24 @@ public class MyHashMapTest {
     public void update() {
         myMap.add("1","2");
         myMap.update("1","3");
-        assertTrue(myMap.isExistValue("3"));
+        assertEquals(new MyObjectEntry<>("1", "3"),myMap.getMyHashMap("1"));
     }
 
     @Test
     public void delete() {
         myMap.add("1","2");
         myMap.add("2","3");
-        myMap.delete("1");
+        myMap.removeMyHashMap("1");
         assertEquals(1,myMap.size());
     }
 
     @Test
     public void isExistKey() {
-        assertFalse(myMap.isExistKey("1"));
+        assertFalse(myMap.containsKeyMyHashMap("1"));
         myMap.add("1","1");
-        assertTrue(myMap.isExistKey("1"));
+        assertTrue(myMap.containsKeyMyHashMap("1"));
         try {
-            myMap.isExistKey(null);
+            myMap.containsKeyMyHashMap(null);
         }catch (IllegalMonitorStateException e){
             assertTrue(true);
         }
@@ -59,9 +57,9 @@ public class MyHashMapTest {
 
     @Test
     public void isExistValue() {
-        assertFalse(myMap.isExistValue("1"));
+        assertFalse(myMap.containsValueMyHashMap("1"));
         myMap.add("1","1");
-        assertTrue(myMap.isExistValue("1"));
+        assertTrue(myMap.containsValueMyHashMap("1"));
 
     }
 
@@ -75,9 +73,9 @@ public class MyHashMapTest {
     @Test
     public void getMyObject() {
         myMap.add("3","2");
-        assertEquals(new MyObjectEntry("3","2"),myMap.getMyObject("3"));
+        assertEquals(new MyObjectEntry("3","2"),myMap.getMyHashMap("3"));
         try {
-            myMap.getMyObject("4");
+            myMap.getMyHashMap("4");
         } catch (IllegalMonitorStateException e){
             assertTrue(true);
         }

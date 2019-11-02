@@ -1,17 +1,24 @@
 package vladimir.gorin.org;
 
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
-public class MyHashMap {
-    private MyLinkedList<MyObjectEntry>[] hashMap;
-    static final double CAPACITY_LIMIT = 0.75;
-    static final int DEEPNESS_LIST =16;
-    public int AMOUNT_BUCKETS =5;
+public class MyHashMap implements Map{
 
-    int count = 0;
+    private static final double CAPACITY_LIMIT = 0.75;
+    private static final int DEEPNESS_LIST =16;
+    int AMOUNT_BUCKETS =5;
+    private MyLinkedList<MyObjectEntry>[] hashMap=new MyLinkedList[AMOUNT_BUCKETS];
+
+    private int count = 0;
 
     MyHashMap() {
-        hashMap = new MyLinkedList[AMOUNT_BUCKETS];
+        init();
+    }
+
+    private void init(){
         for (int i=0;i<hashMap.length;i++){
             hashMap[i]=new MyLinkedList<>();
         }
@@ -19,70 +26,105 @@ public class MyHashMap {
 
     private MyLinkedList<MyObjectEntry> getList(Object key) {
         int hashPos = findHashTable(key);
-        MyLinkedList<MyObjectEntry> myObjectEntries = hashMap[hashPos];
-        return myObjectEntries;
+        return hashMap[hashPos];
     }
 
 
-    public <myHashMap> void increaseMyHashMap(MyLinkedList<MyObjectEntry>[] hashMap ){
+    private <myHashMap> void increaseMyHashMap(MyLinkedList<MyObjectEntry>[] hashMap){
         AMOUNT_BUCKETS=AMOUNT_BUCKETS*2;
         MyLinkedList<MyObjectEntry>[] tmpHashMap = new MyLinkedList[AMOUNT_BUCKETS];
         for (int i=0;i<tmpHashMap.length;i++){
             tmpHashMap[i]=new MyLinkedList<>();
         }
-        for (int i=0;i<hashMap.length;i++){
-            tmpHashMap[i]=hashMap[i];
-        }
-        hashMap=tmpHashMap;
+        System.arraycopy(hashMap, 0, tmpHashMap, 0, hashMap.length);
     }
 
-    public void add(Object key, Object value) {
+    boolean add(Object key, Object value) {
         //Think about increasing massive and evolving
         if (size()>CAPACITY_LIMIT*AMOUNT_BUCKETS*DEEPNESS_LIST) increaseMyHashMap(hashMap);
 
         if (key==null) { throw new NullPointerException("The key for addLast() is null."); }
         MyObjectEntry myObjectEntry = new MyObjectEntry(key, value);
 
-        if (!isExistKey(key)) {
+        if (!containsKeyMyHashMap(key)) {
             getList(key).add(myObjectEntry);
             count++;
+            return true;
         } else {throw new IllegalMonitorStateException("This key is already exist");}
 
     }
 
-    public void update(Object key, Object value) {
-        MyObjectEntry isInHash = getMyObject(key);
-        isInHash.setValue(value);
+    boolean update(Object key, Object value) {
+        try {
+            MyObjectEntry isInHash = getMyHashMap(key);
+            isInHash.setValue(value);
+        } catch (IllegalMonitorStateException e){
+            return false;
+        }
+        return true;
     }
 
-    public MyObjectEntry getMyObject(Object key){
+    MyObjectEntry getMyHashMap(Object key){
         MyObjectEntry isFinding = new MyObjectEntry(key, null);
-        MyObjectEntry isInHash = getList(key).findByKey(isFinding);
-        return isInHash;
+        return getList(key).findByKey(isFinding);
     }
 
-    public void delete(Object key) {
+    Object removeMyHashMap(Object key) {
         MyObjectEntry isDeleting = new MyObjectEntry(key, null);
-       Boolean result = getList(key).remove(isDeleting);
-       if (result) count--;
+       Object result = getList(key).remove(isDeleting);
+       if (result!=null) count--;
+       return result;
+    }
+
+    public HashSet<MyObjectEntry> entrySet() {
+        HashSet<MyObjectEntry> set = new HashSet<>();
+        for (MyLinkedList<MyObjectEntry> myObjectEntries : hashMap) {
+
+            for (MyObjectEntry myObjectEntry : myObjectEntries) {
+                set.add(myObjectEntry);
+            }
+        }
+        return set;
+    }
+
+    private HashSet<Object> keySetHashMap(){
+        HashSet<Object> set= new HashSet<>();
+        for (MyLinkedList<MyObjectEntry> myObjectEntries : hashMap) {
+
+            for (MyObjectEntry myObjectEntry : myObjectEntries) {
+                set.add(myObjectEntry.getKey());
+            }
+        }
+        return set;
+    }
+
+    private Collection<Object> valuesHashMap(){
+        Collection<Object> set= new HashSet<>();
+        for (MyLinkedList<MyObjectEntry> myObjectEntries : hashMap) {
+
+            for (MyObjectEntry myObjectEntry : myObjectEntries) {
+                set.add(myObjectEntry.getValue());
+            }
+        }
+        return set;
     }
 
 
-    public boolean isExistKey(Object key) {
+    boolean containsKeyMyHashMap(Object key) {
         if (key==null) throw new IllegalMonitorStateException("Input key is null");
-        HashSet<MyObjectEntry> set = entrySet();
-        for (MyObjectEntry myObjectEntry : set) {
-            if (myObjectEntry.getKey().equals(key)) {
+        HashSet<Object> set = keySetHashMap();
+        for (Object object : set) {
+            if (object.equals(key)) {
                 return true;
             }
         }
         return false;
     }
 
-    public boolean isExistValue(Object value) {
-        HashSet<MyObjectEntry> set = entrySet();
-        for (MyObjectEntry myObjectEntry : set) {
-            if (myObjectEntry.getValue().equals(value)) {
+    boolean containsValueMyHashMap(Object value) {
+        Collection<Object> set = valuesHashMap();
+        for (Object object : set) {
+            if (object.equals(value)) {
                 return true;
             }
         }
@@ -97,19 +139,66 @@ public class MyHashMap {
         return count;
     }
 
-    private HashSet<MyObjectEntry> entrySet() {
-        HashSet<MyObjectEntry> set = new HashSet<>();
-        for (MyLinkedList<MyObjectEntry> myObjectEntries : hashMap) {
-
-            for (MyObjectEntry myObjectEntry : myObjectEntries) {
-                set.add(myObjectEntry);
-            }
-        }
-        return set;
+    private boolean isEmptyMyHashMap(){
+        return size()==0;
     }
+
 
     private int findHashTable(Object key) {
         return key.hashCode() % hashMap.length;
     }
 
+    @Override
+    public boolean isEmpty() {
+        return isEmptyMyHashMap();
+    }
+
+    @Override
+    public boolean containsKey(Object key) {
+        return containsKeyMyHashMap(key);
+    }
+
+    @Override
+    public boolean containsValue(Object value) {
+        return containsValueMyHashMap(value);
+    }
+
+    @Override
+    public Object get(Object key) {
+        return getMyHashMap(key);
+    }
+
+    @Override
+    public Object put(Object key, Object value) {
+        return update(key,value)?update(key,value):add(key,value);
+    }
+
+    @Override
+    public Object remove(Object key) {
+        return removeMyHashMap(key);
+    }
+
+
+
+    @Override
+    public Set keySet() {
+        return keySetHashMap();
+    }
+
+    @Override
+    public Collection values() {
+        return valuesHashMap();
+    }
+    @Override
+    public void putAll(Map m) {
+    Set<MyObjectEntry> set=m.entrySet();
+        for (MyObjectEntry myObjectEntry : set) {
+            put(myObjectEntry.getKey(),myObjectEntry.getValue());
+        }
+    }
+
+    @Override
+    public void clear() {
+        init();
+    }
 }

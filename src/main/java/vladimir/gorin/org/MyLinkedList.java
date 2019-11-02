@@ -3,59 +3,78 @@ package vladimir.gorin.org;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class MyLinkedList <T> implements Iterable<T> {
+public class MyLinkedList<T> implements Iterable<T> {
     private Node first;
     private Node last;
     private int count;
 
-    public MyLinkedList() {
+    MyLinkedList() {
         first = null;
         last = null;
         count = 0;
     }
 
-    public void add(T item) {
-        if (item == null) { throw new NullPointerException("The first argument for addLast() is null."); }
-        if (!isEmpty()) {
-            Node prev = last;
-            last = new Node(item, null);
-            prev.next = last;
+    void add(T item) {
+        if (item == null) {
+            throw new NullPointerException("The first argument for addLast() is null.");
         }
-        else {
+        if (!isEmpty()) {
+//            Node prev = last;
+            last = new Node(item, null);
+//            prev.next = last;
+        } else {
             last = new Node(item, null);
             first = last;
         }
         count++;
     }
-    public T findByKey(T item){
-        Node prev = first;
+
+    T findByKey(T item) {
+//        Node prev = first;
         Node curr = first;
-        if (curr==null) throw new IllegalMonitorStateException("The item searching by key doesn't exist");
-        while (curr.next!=null||curr==last){
-            if (curr.data.equals(item)){
+        if (curr == null)
+            throw new IllegalMonitorStateException("The item searching by key doesn't exist. List is empty");
+        while (curr.next != null || curr == last) {
+            if (curr.data.equals(item)) {
                 return curr.data;
             }
         }
         throw new IllegalMonitorStateException("The item searching by key doesn't exist");
     }
 
-    public boolean remove(T item) {
-        if (isEmpty()) { throw new IllegalStateException("Cannot remove() from and empty list."); }
-        boolean result = false;
+    T remove(T item) {
+        if (isEmpty()) {
+            throw new IllegalStateException("Cannot remove() from and empty list.");
+        }
+        T result = null;
         Node prev = first;
         Node curr = first;
         while (curr.next != null || curr == last) {
             if (curr.data.equals(item)) {
                 // remove the last remaining element
-                if (count == 1) { first = null; last = null; }
+                if (count == 1) {
+                    first = null;
+                    last = null;
+
+                }
                 // remove first element
-                else if (curr.equals(first)) { first = first.next; }
+                else if (curr.equals(first)) {
+                    first = first.next;
+
+                }
                 // remove last element
-                else if (curr.equals(last)) { last = prev; last.next = null; }
+                else if (curr.equals(last)) {
+                    last = prev;
+                    last.next = null;
+
+                }
                 // remove element
-                else { prev.next = curr.next; }
+                else {
+                    prev.next = curr.next;
+
+                }
                 count--;
-                result = true;
+                result = item;
                 break;
             }
             prev = curr;
@@ -68,7 +87,7 @@ public class MyLinkedList <T> implements Iterable<T> {
         return count;
     }
 
-    public boolean isEmpty() {
+    private boolean isEmpty() {
         return count == 0;
     }
 
@@ -76,33 +95,42 @@ public class MyLinkedList <T> implements Iterable<T> {
         private T data;
         private Node next;
 
-        public Node(T data, Node next) {
+        Node(T data, Node next) {
             this.data = data;
             this.next = next;
         }
     }
 
-    public Iterator<T> iterator() { return new LinkedListIterator(); }
+    public Iterator<T> iterator() {
+        return new LinkedListIterator();
+    }
 
     private class LinkedListIterator implements Iterator<T> {
         private Node current = first;
 
         public T next() {
-            if (!hasNext()) { throw new NoSuchElementException(); }
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
             T item = current.data;
             current = current.next;
             return item;
         }
 
-        public boolean hasNext() { return current != null; }
+        public boolean hasNext() {
+            return current != null;
+        }
 
-        public void remove() { throw new UnsupportedOperationException(); }
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         StringBuilder s = new StringBuilder();
         for (T item : this)
-            s.append(item + " ");
+            s.append(item).append(" ");
         return s.toString();
     }
 }
