@@ -2,83 +2,108 @@ package vladimir.gorin.org;
 
 import org.junit.Test;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.junit.Assert.*;
 
 public class MyHashMapTest {
-    private MyHashMap myMap=new MyHashMap();
-
+    private MyHashMap myMap = new MyHashMap();
+    private HashMap<Object, Object> map = new HashMap<>();
 
     @Test
-    public  void increaseTable(){
-        for (int i = 0; i <66 ; i++) {
-          myMap.add(i,1);  
-        }
-        assertEquals(myMap.AMOUNT_BUCKETS,10);
+    public void containsKey() {
+        assertFalse(myMap.containsKey("1"));
+        assertFalse(map.containsKey("1"));
+        myMap.put("1", "1");
+        map.put("1", "1");
+        assertTrue(myMap.containsKey("1"));
+        assertTrue(map.containsKey("1"));
     }
+
     @Test
-    public void add() {
-        myMap.add("1","2");
-        assertTrue(myMap.containsKeyMyHashMap("1"));
+    public void containsValue() {
+        assertFalse(myMap.containsValue("1"));
+        assertFalse(map.containsValue("1"));
+        myMap.put("1", "1");
+        map.put("1", "1");
+        assertTrue(myMap.containsValue("1"));
+        assertTrue(map.containsValue("1"));
+    }
+
+    @Test
+    public void get() {
+        myMap.put("1", "1");
+        map.put("1", "1");
+        assertEquals(map.get("1"), myMap.get("1"));
+    }
+
+    @Test
+    public void put() {
+        myMap.put("1", "1");
+        map.put("1", "1");
+        myMap.put("1", "2");
+        map.put("1", "2");
+        assertEquals(map.get("1"), myMap.get("1"));
+        map.put("1", 3);
+        assertNotEquals(map.get("1"), myMap.get("1"));
+    }
+
+    @Test
+    public void remove() {
+        myMap.put("1", "1");
+        map.put("1", "1");
+        myMap.remove("1");
+        map.remove("1");
+        assertEquals(myMap.containsKey("1"), map.containsKey(1));
+
+
         try {
-            myMap.add(null,"2");
-            myMap.add("1","3");
-        } catch (NullPointerException | IllegalMonitorStateException e){
+            map.remove("2");
+        }catch (IllegalStateException e){
+            assertTrue(true);
+        }
+        try {
+            myMap.remove("2");
+        }catch (IllegalStateException e){
             assertTrue(true);
         }
 
     }
 
     @Test
-    public void update() {
-        myMap.add("1","2");
-        myMap.update("1","3");
-        assertEquals("3",myMap.getMyHashMap("1"));
+    public void keySet() {
+        myMap.put("1", "1");
+        map.put("1", "1");
+        myMap.put("2", "1");
+        map.put("2", "1");
+        assertEquals(myMap.keySet(),map.keySet());
     }
 
     @Test
-    public void delete() {
-        myMap.add("1","2");
-        myMap.add("2","3");
-        myMap.removeMyHashMap("1");
-        assertEquals(1,myMap.size());
+    public void values() {
+        myMap.put("1", "1");
+        map.put("1", "1");
+        myMap.put("2", "1");
+        map.put("2", "1");
+        assertEquals(map.values(),myMap.values());
+
+//        map.remove(2);
+//        assertNotEquals(myMap.values(),map.values());
     }
 
     @Test
-    public void isExistKey() {
-        assertFalse(myMap.containsKeyMyHashMap("1"));
-        myMap.add("1","1");
-        assertTrue(myMap.containsKeyMyHashMap("1"));
-        try {
-            myMap.containsKeyMyHashMap(null);
-        }catch (NullPointerException e){
-            assertTrue(true);
-        }
+    public void putAll() {
+        Map<Object, Object> tmp = new HashMap<>();
+        tmp.put("1","1");
+        tmp.put("2","1");
+        map.putAll(tmp);
+        myMap.putAll(tmp);
+        assertEquals(map.entrySet(),myMap.entrySet());
     }
 
     @Test
-    public void isExistValue() {
-        assertFalse(myMap.containsValueMyHashMap("1"));
-        myMap.add("1","1");
-        assertTrue(myMap.containsValueMyHashMap("1"));
+    public void clear() {
 
-    }
-
-    @Test
-    public void size() {
-        myMap.add("1","2");
-        myMap.add("2","2");
-        myMap.add("3","2");
-        assertEquals(3,myMap.size());
-    }
-    @Test
-    public void getMyObject() {
-        myMap.add("3","2");
-        assertEquals("2",myMap.getMyHashMap("3"));
-        try {
-            myMap.getMyHashMap("4");
-            assertFalse(false);
-        } catch (NullPointerException e){
-            assertTrue(true);
-        }
     }
 }

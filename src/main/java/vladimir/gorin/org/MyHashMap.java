@@ -1,15 +1,12 @@
 package vladimir.gorin.org;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class MyHashMap implements Map {
 
     private static final double CAPACITY_LIMIT = 0.75;
     private static final int DEEPNESS_LIST = 16;
-    int AMOUNT_BUCKETS = 5;
+    private int AMOUNT_BUCKETS = 5;
     private MyLinkedList<MyObjectEntry>[] hashMap = new MyLinkedList[AMOUNT_BUCKETS];
 
     private int count = 0;
@@ -58,7 +55,7 @@ public class MyHashMap implements Map {
 
     }
 
-    boolean update(Object key, Object value) {
+    private boolean update(Object key, Object value) {
         try {
             getList(key).findByKey(new MyObjectEntry(key, null)).setValue(value);
             return true;
@@ -67,18 +64,16 @@ public class MyHashMap implements Map {
         }
     }
 
-    Object getMyHashMap(Object key) {
-        Object value;
+    private Object getMyHashMap(Object key) {
         MyObjectEntry isFinding = new MyObjectEntry(key, null);
         try {
-            value = getList(key).findByKey(isFinding).getValue();
+            return getList(key).findByKey(isFinding).getValue();
         } catch (NullPointerException e) {
             return null;
         }
-        return value;
     }
 
-    Object removeMyHashMap(Object key) {
+    private Object removeMyHashMap(Object key) {
         MyObjectEntry isDeleting = new MyObjectEntry(key, null);
         Object result = getList(key).remove(isDeleting);
         if (result != null) count--;
@@ -107,8 +102,8 @@ public class MyHashMap implements Map {
         return set;
     }
 
-    private Collection<Object> valuesHashMap() {
-        Collection<Object> set = new HashSet<>();
+    private Collection valuesHashMap() {
+        Collection<Object> set = new LinkedList<>();
         for (MyLinkedList<MyObjectEntry> myObjectEntries : hashMap) {
 
             for (MyObjectEntry myObjectEntry : myObjectEntries) {
@@ -119,7 +114,7 @@ public class MyHashMap implements Map {
     }
 
 
-    boolean containsKeyMyHashMap(Object key) {
+    private boolean containsKeyMyHashMap(Object key) {
         if (key == null) throw new NullPointerException("Input key is null");
         HashSet<Object> set = keySetHashMap();
         for (Object object : set) {
@@ -130,7 +125,7 @@ public class MyHashMap implements Map {
         return false;
     }
 
-    boolean containsValueMyHashMap(Object value) {
+    private boolean containsValueMyHashMap(Object value) {
         Collection<Object> set = valuesHashMap();
         for (Object object : set) {
             if (object.equals(value)) {
@@ -200,8 +195,8 @@ public class MyHashMap implements Map {
 
     @Override
     public void putAll(Map m) {
-        Set<MyObjectEntry> set = m.entrySet();
-        for (MyObjectEntry myObjectEntry : set) {
+        Set<Map.Entry<Object, Object>> set = m.entrySet();
+        for (Map.Entry<Object, Object> myObjectEntry : set) {
             put(myObjectEntry.getKey(), myObjectEntry.getValue());
         }
     }
