@@ -33,13 +33,13 @@ public class MyLinkedList<T> implements Iterable<T> {
 //        Node prev = first;
         Node curr = first;
         if (curr == null)
-            throw new IllegalMonitorStateException("The item searching by key doesn't exist. List is empty");
+            throw new NullPointerException("The item searching by key doesn't exist. List is empty");
         while (curr.next != null || curr == last) {
             if (curr.data.equals(item)) {
                 return curr.data;
             }
         }
-        throw new IllegalMonitorStateException("The item searching by key doesn't exist");
+        throw new NullPointerException("The item searching by key doesn't exist");
     }
 
     T remove(T item) {

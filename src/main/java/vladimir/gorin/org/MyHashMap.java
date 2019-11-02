@@ -5,12 +5,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class MyHashMap implements Map{
+public class MyHashMap implements Map {
 
     private static final double CAPACITY_LIMIT = 0.75;
-    private static final int DEEPNESS_LIST =16;
-    int AMOUNT_BUCKETS =5;
-    private MyLinkedList<MyObjectEntry>[] hashMap=new MyLinkedList[AMOUNT_BUCKETS];
+    private static final int DEEPNESS_LIST = 16;
+    int AMOUNT_BUCKETS = 5;
+    private MyLinkedList<MyObjectEntry>[] hashMap = new MyLinkedList[AMOUNT_BUCKETS];
 
     private int count = 0;
 
@@ -18,9 +18,9 @@ public class MyHashMap implements Map{
         init();
     }
 
-    private void init(){
-        for (int i=0;i<hashMap.length;i++){
-            hashMap[i]=new MyLinkedList<>();
+    private void init() {
+        for (int i = 0; i < hashMap.length; i++) {
+            hashMap[i] = new MyLinkedList<>();
         }
     }
 
@@ -30,50 +30,59 @@ public class MyHashMap implements Map{
     }
 
 
-    private <myHashMap> void increaseMyHashMap(MyLinkedList<MyObjectEntry>[] hashMap){
-        AMOUNT_BUCKETS=AMOUNT_BUCKETS*2;
+    private <myHashMap> void increaseMyHashMap(MyLinkedList<MyObjectEntry>[] hashMap) {
+        AMOUNT_BUCKETS = AMOUNT_BUCKETS * 2;
         MyLinkedList<MyObjectEntry>[] tmpHashMap = new MyLinkedList[AMOUNT_BUCKETS];
-        for (int i=0;i<tmpHashMap.length;i++){
-            tmpHashMap[i]=new MyLinkedList<>();
+        for (int i = 0; i < tmpHashMap.length; i++) {
+            tmpHashMap[i] = new MyLinkedList<>();
         }
         System.arraycopy(hashMap, 0, tmpHashMap, 0, hashMap.length);
     }
 
     boolean add(Object key, Object value) {
         //Think about increasing massive and evolving
-        if (size()>CAPACITY_LIMIT*AMOUNT_BUCKETS*DEEPNESS_LIST) increaseMyHashMap(hashMap);
+        if (size() > CAPACITY_LIMIT * AMOUNT_BUCKETS * DEEPNESS_LIST) increaseMyHashMap(hashMap);
 
-        if (key==null) { throw new NullPointerException("The key for addLast() is null."); }
+        if (key == null) {
+            throw new NullPointerException("The key for addLast() is null.");
+        }
         MyObjectEntry myObjectEntry = new MyObjectEntry(key, value);
 
         if (!containsKeyMyHashMap(key)) {
             getList(key).add(myObjectEntry);
             count++;
             return true;
-        } else {throw new IllegalMonitorStateException("This key is already exist");}
+        } else {
+            throw new IllegalStateException("This key is already exist");
+        }
 
     }
 
     boolean update(Object key, Object value) {
         try {
-            MyObjectEntry isInHash = getMyHashMap(key);
-            isInHash.setValue(value);
-        } catch (IllegalMonitorStateException e){
+            getList(key).findByKey(new MyObjectEntry(key, null)).setValue(value);
+            return true;
+        } catch (NullPointerException e) {
             return false;
         }
-        return true;
     }
 
-    MyObjectEntry getMyHashMap(Object key){
+    Object getMyHashMap(Object key) {
+        Object value;
         MyObjectEntry isFinding = new MyObjectEntry(key, null);
-        return getList(key).findByKey(isFinding);
+        try {
+            value = getList(key).findByKey(isFinding).getValue();
+        } catch (NullPointerException e) {
+            return null;
+        }
+        return value;
     }
 
     Object removeMyHashMap(Object key) {
         MyObjectEntry isDeleting = new MyObjectEntry(key, null);
-       Object result = getList(key).remove(isDeleting);
-       if (result!=null) count--;
-       return result;
+        Object result = getList(key).remove(isDeleting);
+        if (result != null) count--;
+        return result;
     }
 
     public HashSet<MyObjectEntry> entrySet() {
@@ -87,8 +96,8 @@ public class MyHashMap implements Map{
         return set;
     }
 
-    private HashSet<Object> keySetHashMap(){
-        HashSet<Object> set= new HashSet<>();
+    private HashSet<Object> keySetHashMap() {
+        HashSet<Object> set = new HashSet<>();
         for (MyLinkedList<MyObjectEntry> myObjectEntries : hashMap) {
 
             for (MyObjectEntry myObjectEntry : myObjectEntries) {
@@ -98,8 +107,8 @@ public class MyHashMap implements Map{
         return set;
     }
 
-    private Collection<Object> valuesHashMap(){
-        Collection<Object> set= new HashSet<>();
+    private Collection<Object> valuesHashMap() {
+        Collection<Object> set = new HashSet<>();
         for (MyLinkedList<MyObjectEntry> myObjectEntries : hashMap) {
 
             for (MyObjectEntry myObjectEntry : myObjectEntries) {
@@ -111,7 +120,7 @@ public class MyHashMap implements Map{
 
 
     boolean containsKeyMyHashMap(Object key) {
-        if (key==null) throw new IllegalMonitorStateException("Input key is null");
+        if (key == null) throw new NullPointerException("Input key is null");
         HashSet<Object> set = keySetHashMap();
         for (Object object : set) {
             if (object.equals(key)) {
@@ -139,8 +148,8 @@ public class MyHashMap implements Map{
         return count;
     }
 
-    private boolean isEmptyMyHashMap(){
-        return size()==0;
+    private boolean isEmptyMyHashMap() {
+        return size() == 0;
     }
 
 
@@ -170,14 +179,13 @@ public class MyHashMap implements Map{
 
     @Override
     public Object put(Object key, Object value) {
-        return update(key,value)?update(key,value):add(key,value);
+        return update(key, value) ? update(key, value) : add(key, value);
     }
 
     @Override
     public Object remove(Object key) {
         return removeMyHashMap(key);
     }
-
 
 
     @Override
@@ -189,11 +197,12 @@ public class MyHashMap implements Map{
     public Collection values() {
         return valuesHashMap();
     }
+
     @Override
     public void putAll(Map m) {
-    Set<MyObjectEntry> set=m.entrySet();
+        Set<MyObjectEntry> set = m.entrySet();
         for (MyObjectEntry myObjectEntry : set) {
-            put(myObjectEntry.getKey(),myObjectEntry.getValue());
+            put(myObjectEntry.getKey(), myObjectEntry.getValue());
         }
     }
 

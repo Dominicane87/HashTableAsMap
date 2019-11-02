@@ -32,7 +32,7 @@ public class MyHashMapTest {
     public void update() {
         myMap.add("1","2");
         myMap.update("1","3");
-        assertEquals(new MyObjectEntry<>("1", "3"),myMap.getMyHashMap("1"));
+        assertEquals("3",myMap.getMyHashMap("1"));
     }
 
     @Test
@@ -50,7 +50,7 @@ public class MyHashMapTest {
         assertTrue(myMap.containsKeyMyHashMap("1"));
         try {
             myMap.containsKeyMyHashMap(null);
-        }catch (IllegalMonitorStateException e){
+        }catch (NullPointerException e){
             assertTrue(true);
         }
     }
@@ -73,10 +73,11 @@ public class MyHashMapTest {
     @Test
     public void getMyObject() {
         myMap.add("3","2");
-        assertEquals(new MyObjectEntry("3","2"),myMap.getMyHashMap("3"));
+        assertEquals("2",myMap.getMyHashMap("3"));
         try {
             myMap.getMyHashMap("4");
-        } catch (IllegalMonitorStateException e){
+            assertFalse(false);
+        } catch (NullPointerException e){
             assertTrue(true);
         }
     }

@@ -2,19 +2,21 @@ package vladimir.gorin.org;
 
 import java.util.Objects;
 
-public class MyObjectEntry<K,V> {
-   private K key;
+public class MyObjectEntry<K, V> {
+    private K key;
     private V value;
 
     MyObjectEntry(K key, V value) {
         this.key = key;
         this.value = value;
     }
-    public boolean equalsKey(K key){
+
+    public boolean equalsKey(K key) {
         return this.key.equals(key);
     }
-    public boolean equalsValue(V value){
-        return  this.value.equals(value);
+
+    public boolean equalsValue(V value) {
+        return this.value.equals(value);
     }
 
     Object getKey() {
