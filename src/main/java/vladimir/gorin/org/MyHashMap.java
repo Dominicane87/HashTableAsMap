@@ -7,7 +7,7 @@ public class MyHashMap<K,V> implements Map {
     private static final double CAPACITY_LIMIT = 0.75;
     private static final int DEEPNESS_LIST = 16;
     private int amountBuckets = 5;
-    private MyLinkedList<MyObjectEntry>[] hashMap = (MyLinkedList<MyObjectEntry>[]) new MyLinkedList[amountBuckets];
+    private MyLinkedList<MyObjectEntry>[] hashMap;
 
     private int count = 0;
 
@@ -16,12 +16,13 @@ public class MyHashMap<K,V> implements Map {
     }
 
     private void init() {
+        hashMap = new MyLinkedList[amountBuckets];
         for (int i = 0; i < hashMap.length; i++) {
             hashMap[i] = new MyLinkedList<>();
         }
     }
 
-    private MyLinkedList<MyObjectEntry> getList(Object key) {
+    private MyLinkedList<MyObjectEntry> getList(K key) {
         int hashPos = findHashTable(key);
         return hashMap[hashPos];
     }
@@ -34,14 +35,14 @@ public class MyHashMap<K,V> implements Map {
         this.hashMap=tmpHashMap;
     }
 
-    private boolean add(Object key, Object value) {
+    private boolean add(K key, V value) {
         //Think about increasing massive and evolving
         if (size() > CAPACITY_LIMIT * amountBuckets * DEEPNESS_LIST) increaseMyHashMap(hashMap);
 
         if (key == null) {
             throw new NullPointerException("The key for addLast() is null.");
         }
-        MyObjectEntry<Object,Object> myObjectEntry = new MyObjectEntry<>(key, value);
+        MyObjectEntry<K,V> myObjectEntry = new MyObjectEntry<>(key, value);
 
         if (!containsKeyMyHashMap(key)) {
             getList(key).add(myObjectEntry);
@@ -53,17 +54,17 @@ public class MyHashMap<K,V> implements Map {
 
     }
 
-    private boolean update(Object key, Object value) {
+    private boolean update(K key, V value) {
         try {
-            getList(key).findByKey(new MyObjectEntry<Object,Object>(key, null)).setValue(value);
+            getList(key).findByKey(new MyObjectEntry<K,V>(key, null)).setValue(value);
             return true;
         } catch (NullPointerException e) {
             return false;
         }
     }
 
-    private Object getMyHashMap(Object key) {
-        MyObjectEntry<Object,Object> isFinding = new MyObjectEntry<>(key, null);
+    private V getMyHashMap(K key) {
+        MyObjectEntry<K,V> isFinding = new MyObjectEntry<>(key, null);
         try {
             return getList(key).findByKey(isFinding).getValue();
         } catch (NullPointerException e) {
@@ -71,8 +72,8 @@ public class MyHashMap<K,V> implements Map {
         }
     }
 
-    private Object removeMyHashMap(Object key) {
-        MyObjectEntry<Object,Object> isDeleting = new MyObjectEntry<>(key, null);
+    private Object removeMyHashMap(K key) {
+        MyObjectEntry<K,V> isDeleting = new MyObjectEntry<>(key, null);
         Object result = getList(key).remove(isDeleting);
         if (result != null) count--;
         return result;
@@ -89,12 +90,12 @@ public class MyHashMap<K,V> implements Map {
         return set;
     }
 
-    private HashSet<Object> keySetHashMap() {
-        HashSet<Object> set = new HashSet<>();
+    private HashSet<K> keySetHashMap() {
+        HashSet<K> set = new HashSet<>();
         for (MyLinkedList<MyObjectEntry> myObjectEntries : hashMap) {
 
             for (MyObjectEntry myObjectEntry : myObjectEntries) {
-                set.add(myObjectEntry.getKey());
+                set.add((K) myObjectEntry.getKey());
             }
         }
         return set;
@@ -112,10 +113,10 @@ public class MyHashMap<K,V> implements Map {
     }
 
 
-    private boolean containsKeyMyHashMap(Object key) {
+    private boolean containsKeyMyHashMap(K key) {
         if (key == null) throw new NullPointerException("Input key is null");
-        HashSet<Object> set = keySetHashMap();
-        for (Object object : set) {
+        HashSet<K> set = keySetHashMap();
+        for (K object : set) {
             if (object.equals(key)) {
                 return true;
             }
@@ -123,9 +124,9 @@ public class MyHashMap<K,V> implements Map {
         return false;
     }
 
-    private boolean containsValueMyHashMap(Object value) {
-        Collection<Object> set = valuesHashMap();
-        for (Object object : set) {
+    private boolean containsValueMyHashMap(V value) {
+        Collection<V> set = valuesHashMap();
+        for (V object : set) {
             if (object.equals(value)) {
                 return true;
             }
@@ -166,7 +167,7 @@ public class MyHashMap<K,V> implements Map {
     }
 
     @Override
-    public Object get(Object key) {
+    public Object get(K key) {
         return getMyHashMap(key);
     }
 

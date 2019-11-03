@@ -19,11 +19,11 @@ public class MyObjectEntry<K, V> {
         return this.value.equals(value);
     }
 
-    Object getKey() {
+    K getKey() {
         return key;
     }
 
-    Object getValue() {
+    V getValue() {
         return value;
     }
 
