@@ -2,12 +2,12 @@ package vladimir.gorin.org;
 
 import java.util.*;
 
-public class MyHashMap implements Map {
+public class MyHashMap<K,V> implements Map {
 
     private static final double CAPACITY_LIMIT = 0.75;
     private static final int DEEPNESS_LIST = 16;
-    private int AMOUNT_BUCKETS = 5;
-    private MyLinkedList<MyObjectEntry>[] hashMap = new MyLinkedList[AMOUNT_BUCKETS];
+    private int amountBuckets = 5;
+    private MyLinkedList<MyObjectEntry>[] hashMap = (MyLinkedList<MyObjectEntry>[]) new MyLinkedList[amountBuckets];
 
     private int count = 0;
 
@@ -27,23 +27,21 @@ public class MyHashMap implements Map {
     }
 
 
-    private <myHashMap> void increaseMyHashMap(MyLinkedList<MyObjectEntry>[] hashMap) {
-        AMOUNT_BUCKETS = AMOUNT_BUCKETS * 2;
-        MyLinkedList<MyObjectEntry>[] tmpHashMap = new MyLinkedList[AMOUNT_BUCKETS];
-        for (int i = 0; i < tmpHashMap.length; i++) {
-            tmpHashMap[i] = new MyLinkedList<>();
-        }
+    private void increaseMyHashMap(MyLinkedList<MyObjectEntry>[] hashMap) {
+        amountBuckets = amountBuckets * 2;
+        MyLinkedList<MyObjectEntry>[] tmpHashMap = (MyLinkedList<MyObjectEntry>[]) new MyLinkedList[amountBuckets];
         System.arraycopy(hashMap, 0, tmpHashMap, 0, hashMap.length);
+        this.hashMap=tmpHashMap;
     }
 
-    boolean add(Object key, Object value) {
+    private boolean add(Object key, Object value) {
         //Think about increasing massive and evolving
-        if (size() > CAPACITY_LIMIT * AMOUNT_BUCKETS * DEEPNESS_LIST) increaseMyHashMap(hashMap);
+        if (size() > CAPACITY_LIMIT * amountBuckets * DEEPNESS_LIST) increaseMyHashMap(hashMap);
 
         if (key == null) {
             throw new NullPointerException("The key for addLast() is null.");
         }
-        MyObjectEntry myObjectEntry = new MyObjectEntry(key, value);
+        MyObjectEntry<Object,Object> myObjectEntry = new MyObjectEntry<>(key, value);
 
         if (!containsKeyMyHashMap(key)) {
             getList(key).add(myObjectEntry);
@@ -57,7 +55,7 @@ public class MyHashMap implements Map {
 
     private boolean update(Object key, Object value) {
         try {
-            getList(key).findByKey(new MyObjectEntry(key, null)).setValue(value);
+            getList(key).findByKey(new MyObjectEntry<Object,Object>(key, null)).setValue(value);
             return true;
         } catch (NullPointerException e) {
             return false;
@@ -65,7 +63,7 @@ public class MyHashMap implements Map {
     }
 
     private Object getMyHashMap(Object key) {
-        MyObjectEntry isFinding = new MyObjectEntry(key, null);
+        MyObjectEntry<Object,Object> isFinding = new MyObjectEntry<>(key, null);
         try {
             return getList(key).findByKey(isFinding).getValue();
         } catch (NullPointerException e) {
@@ -74,7 +72,7 @@ public class MyHashMap implements Map {
     }
 
     private Object removeMyHashMap(Object key) {
-        MyObjectEntry isDeleting = new MyObjectEntry(key, null);
+        MyObjectEntry<Object,Object> isDeleting = new MyObjectEntry<>(key, null);
         Object result = getList(key).remove(isDeleting);
         if (result != null) count--;
         return result;
@@ -195,7 +193,7 @@ public class MyHashMap implements Map {
 
     @Override
     public void putAll(Map m) {
-        Set<Map.Entry<Object, Object>> set = m.entrySet();
+        Set<Map.Entry<Object, Object>> set = (Set<Map.Entry<Object, Object>>) m.entrySet();
         for (Map.Entry<Object, Object> myObjectEntry : set) {
             put(myObjectEntry.getKey(), myObjectEntry.getValue());
         }

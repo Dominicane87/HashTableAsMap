@@ -1,5 +1,9 @@
 package vladimir.gorin.org;
 
+import vladimir.gorin.org.exceptions.EmptyListException;
+import vladimir.gorin.org.exceptions.NullKeyException;
+import vladimir.gorin.org.exceptions.NullObjectException;
+
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -14,7 +18,7 @@ public class MyLinkedList<T> implements Iterable<T> {
         count = 0;
     }
 
-    void add(T item) {
+    void add(T item)  {
         if (item == null) {
             throw new NullPointerException("The first argument for addLast() is null.");
         }
@@ -29,7 +33,7 @@ public class MyLinkedList<T> implements Iterable<T> {
         count++;
     }
 
-    T findByKey(T item) {
+    T findByKey(T item)  {
 //        Node prev = first;
         Node curr = first;
         if (curr == null)
@@ -44,7 +48,7 @@ public class MyLinkedList<T> implements Iterable<T> {
 
     T remove(T item) {
         if (isEmpty()) {
-            throw new IllegalStateException("Cannot remove() from and empty list.");
+            throw new NullPointerException("Cannot remove() from and empty list.");
         }
         T result = null;
         Node prev = first;
