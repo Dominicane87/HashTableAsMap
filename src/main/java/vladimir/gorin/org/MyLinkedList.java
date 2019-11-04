@@ -48,7 +48,8 @@ public class MyLinkedList<T> implements Iterable<T> {
 
     T remove(T item) {
         if (isEmpty()) {
-            throw new NullPointerException("Cannot remove() from and empty list.");
+//            throw new NullPointerException("Cannot remove() from and empty list.");
+            return null;
         }
         T result = null;
         Node prev = first;

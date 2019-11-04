@@ -47,4 +47,9 @@ public class MyObjectEntry<K, V> {
     public int hashCode() {
         return Objects.hash(getKey());
     }
+
+    @Override
+    public String toString() {
+        return key + "=" + value;
+    }
 }
