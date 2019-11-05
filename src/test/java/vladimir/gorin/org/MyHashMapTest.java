@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import static org.junit.Assert.*;
 
@@ -86,11 +87,14 @@ public class MyHashMapTest {
         map.put("1", "1");
         myMap.put("2", "1");
         map.put("2", "1");
-        assertEquals(map.values(),myMap.values());
+        assertEquals(myMap.size(),map.size());
+        Set<Object> set=map.keySet();
+        for (Object o : set) {
+            assertEquals(map.get(o),myMap.get(o));
+            }
+        }
 
-//        map.remove(2);
-//        assertNotEquals(myMap.values(),map.values());
-    }
+
 
     @Test
     public void putAll() {

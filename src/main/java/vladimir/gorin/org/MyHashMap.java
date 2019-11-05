@@ -80,35 +80,35 @@ public class MyHashMap<K,V> implements Map {
     }
 
     public Set<Entry<K,V>> entrySet() {
-        HashMap<K,V> map=new HashMap<>();
+        Set<Entry<K,V>> set=new HashSet<>();
 
         for (MyLinkedList<MyObjectEntry<K,V>> myObjectEntries : hashMap) {
 
             for (MyObjectEntry<K,V> myObjectEntry : myObjectEntries) {
-                map.put(myObjectEntry.getKey(),myObjectEntry.getValue());
+                set.add(new MyEntry<>(myObjectEntry.getKey(), myObjectEntry.getValue()));
             }
         }
-        return map.entrySet();
+        return set;
     }
 
     private HashSet<K> keySetHashMap() {
         HashSet<K> set = new HashSet<>();
-       Iterator<Entry<K,V>> iterator=entrySet().iterator();
-       while (iterator.hasNext()){
-           set.add(iterator.next().getKey());
-       }
+        for (Entry<K, V> kvEntry : entrySet()) {
+            set.add(kvEntry.getKey());
+        }
         return set;
     }
 
     private Collection<V> valuesHashMap() {
-        HashMap<K,V> set=new HashMap<>();
+        List<V> list=new LinkedList<>();
         Iterator<Entry<K,V>> iterator=entrySet().iterator();
         Entry<K,V> entry;
+
         while (iterator.hasNext()){
             entry=iterator.next();
-            set.put(entry.getKey(),entry.getValue());
+           list.add(entry.getValue());
         }
-        return set.values();
+        return list;
     }
 
 
