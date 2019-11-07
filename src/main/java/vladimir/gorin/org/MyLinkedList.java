@@ -42,6 +42,7 @@ public class MyLinkedList<T> implements Iterable<T> {
             if (curr.data.equals(item)) {
                 return curr.data;
             }
+            curr=curr.next;
         }
         throw new NullPointerException("The item searching by key doesn't exist");
     }

@@ -20,6 +20,7 @@ public class MyHashMap<K,V> implements Map {
         for (int i = 0; i < hashMap.length; i++) {
             hashMap[i] = new MyLinkedList<>();
         }
+        count=0;
     }
 
     private MyLinkedList<MyObjectEntry<K,V>> getList(Object key) {
