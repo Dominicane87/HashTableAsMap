@@ -5,10 +5,26 @@ import java.util.Objects;
 public class MyObjectEntry<K, V> {
     private K key;
     private V value;
+    private MyObjectEntry next;
+    private boolean isNull;
+
+    MyObjectEntry() {
+        isNull=true;
+    }
+
+    MyObjectEntry getNext() {
+        return next;
+    }
+
+    void setNext(MyObjectEntry next) {
+        this.next = next;
+    }
 
     MyObjectEntry(K key, V value) {
         this.key = key;
         this.value = value;
+        next=null;
+        isNull=false;
     }
 
     public boolean equalsKey(K key) {
@@ -27,12 +43,10 @@ public class MyObjectEntry<K, V> {
         return value;
     }
 
-    public void setKey(K key) {
-        this.key = key;
-    }
-
-    void setValue(V value) {
+    V setValue(V value) {
+        V old = this.value;
         this.value = value;
+        return old;
     }
 
     @Override

@@ -12,6 +12,13 @@ public class MyHashMapTest {
     private MyHashMap myMap = new MyHashMap();
     private HashMap<Object, Object> map = new HashMap<>();
 
+
+    @Test
+    public void increaseMap() {
+        for (int i=0;i<100;i++) {
+            myMap.put(i,1);
+        }
+    }
     @Test
     public void containsKey() {
         assertFalse(myMap.containsKey("1"));
@@ -87,7 +94,7 @@ public class MyHashMapTest {
         map.put("1", "1");
         myMap.put("2", "1");
         map.put("2", "1");
-        assertEquals(myMap.size(),map.size());
+        assertEquals(map.size(),myMap.size());
         Set<Object> set=map.keySet();
         for (Object o : set) {
             assertEquals(map.get(o),myMap.get(o));
@@ -108,6 +115,10 @@ public class MyHashMapTest {
 
     @Test
     public void clear() {
-
+        myMap.put("1", "1");
+        map.put("1", "1");
+        myMap.put("2", "1");
+        map.put("2", "1");
+        assertEquals(map.size(),myMap.size());
     }
 }

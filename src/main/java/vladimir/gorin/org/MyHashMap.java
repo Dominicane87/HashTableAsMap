@@ -2,91 +2,99 @@ package vladimir.gorin.org;
 
 import java.util.*;
 
-public class MyHashMap<K,V> implements Map {
+public class MyHashMap<K, V> implements Map {
 
     private static final double CAPACITY_LIMIT = 0.75;
     private static final int DEEPNESS_LIST = 16;
     private int amountBuckets = 5;
-    private MyLinkedList<MyObjectEntry<K,V>>[] hashMap;
-
+    private MyObjectEntry<K,V>[] hashMap;
     private int count = 0;
 
+    @SuppressWarnings("unchecked")
     MyHashMap() {
-        init();
-    }
-@SuppressWarnings("unchecked")
-    private void init() {
-        hashMap = new MyLinkedList[amountBuckets];
-        for (int i = 0; i < hashMap.length; i++) {
-            hashMap[i] = new MyLinkedList<>();
-        }
-        count=0;
+       hashMap=new MyObjectEntry[amountBuckets];
     }
 
-    private MyLinkedList<MyObjectEntry<K,V>> getList(Object key) {
-        int hashPos = findHashTable(key);
-        return hashMap[hashPos];
-    }
 
-@SuppressWarnings("unchecked")
-    private void increaseMyHashMap(MyLinkedList<MyObjectEntry<K,V>>[] hashMap) {
+    @SuppressWarnings("unchecked")
+    private void increaseMyHashMap() {
+        Set<Entry<K, V>> set = entrySet();
         amountBuckets = amountBuckets * 2;
-        MyLinkedList<MyObjectEntry<K,V>>[] tmpHashMap = (MyLinkedList<MyObjectEntry<K,V>>[]) new MyLinkedList[amountBuckets];
-        System.arraycopy(hashMap, 0, tmpHashMap, 0, hashMap.length);
-        this.hashMap=tmpHashMap;
+        hashMap =new MyObjectEntry[amountBuckets];
+        for (Entry<K, V> entry : set) {
+            this.add(entry.getKey(), entry.getValue());
+        }
+    }
+    private MyObjectEntry<K,V> findHashTable(Object key) {
+        return hashMap[key.hashCode() % hashMap.length];
     }
 
-    private boolean add(K key, V value) {
-        //Think about increasing massive and evolving
-        if (size() > CAPACITY_LIMIT * amountBuckets * DEEPNESS_LIST) increaseMyHashMap(hashMap);
+    @SuppressWarnings("unchecked")
+    private V add(K key, V value) {
+        if (size() > CAPACITY_LIMIT * amountBuckets * DEEPNESS_LIST) increaseMyHashMap();
 
-        if (key == null) {
-            throw new NullPointerException("The key for addLast() is null.");
-        }
-        MyObjectEntry<K,V> myObjectEntry = new MyObjectEntry<>(key, value);
-
-        if (!containsKeyMyHashMap(key)) {
-            getList(key).add(myObjectEntry);
+           MyObjectEntry<K,V> first =findHashTable(key);
+           if (first==null){
+               hashMap[key.hashCode() % hashMap.length]=new MyObjectEntry<>(key,value);
+               count++;
+               return null;
+           }
+           MyObjectEntry<K,V> prev=new MyObjectEntry<>();
+           while (first!=null){
+               prev=first;
+               if (first.getKey().equals(key)) {
+                   V old =first.getValue();
+                   first.setValue(value);
+                   return old;
+               }
+               first=first.getNext();
+           }
+           prev.setNext(new MyObjectEntry<>(key,value));
+//           first=new MyObjectEntry<>(key,value);
             count++;
-            return true;
-        } else {
-            throw new IllegalStateException("This key is already exist");
-        }
-
-    }
-
-    private boolean update(K key, V value) {
-        try {
-            getList(key).findByKey(new MyObjectEntry<K,V>(key, null)).setValue(value);
-            return true;
-        } catch (NullPointerException e) {
-            return false;
-        }
-    }
-
-    private V getMyHashMap(K key) {
-        MyObjectEntry<K,V> isFinding = new MyObjectEntry<>(key, null);
-        try {
-            return getList(key).findByKey(isFinding).getValue();
-        } catch (NullPointerException e) {
             return null;
         }
+    @SuppressWarnings("unchecked")
+    private V getMyHashMap(K key) {
+        MyObjectEntry<K,V> first =findHashTable(key);
+        while (first!=null) {
+            if (first.getKey().equals(key)){
+                return first.getValue();
+            }
+            first=first.getNext();
+        }
+        return null;
     }
+    @SuppressWarnings("unchecked")
+    private V removeMyHashMap(K key) {
+        MyObjectEntry<K, V> first = findHashTable(key);
+        MyObjectEntry<K, V> prev = first;
+        MyObjectEntry<K, V> curr = first;
+        while (curr!=null) {
+            if (curr.getKey().equals(key)&(curr==first)){
+                hashMap[key.hashCode() % hashMap.length] =null;
+                return first.getValue();
+            }
 
-    private Object removeMyHashMap(K key) {
-        MyObjectEntry<K,V> isDeleting = new MyObjectEntry<>(key, null);
-        Object result = getList(key).remove(isDeleting);
-        if (result != null) count--;
-        return result;
+            if (curr.getKey().equals(key)){
+                V old=curr.getValue();
+                prev=curr.getNext();
+                return old;
+            }
+            prev=curr;
+            curr=curr.getNext();
+        }
+        return null;
     }
+    @SuppressWarnings("unchecked")
+    public Set<Entry<K, V>> entrySet() {
+        Set<Entry<K, V>> set = new HashSet<>();
 
-    public Set<Entry<K,V>> entrySet() {
-        Set<Entry<K,V>> set=new HashSet<>();
-
-        for (MyLinkedList<MyObjectEntry<K,V>> myObjectEntries : hashMap) {
-
-            for (MyObjectEntry<K,V> myObjectEntry : myObjectEntries) {
-                set.add(new MyEntry<>(myObjectEntry.getKey(), myObjectEntry.getValue()));
+        for (MyObjectEntry<K, V> myObjectEntries : hashMap) {
+            MyObjectEntry<K, V> curr=myObjectEntries;
+            while (curr!=null){
+                set.add(new MyEntry<>(curr.getKey(), curr.getValue()));
+                curr=curr.getNext();
             }
         }
         return set;
@@ -101,32 +109,24 @@ public class MyHashMap<K,V> implements Map {
     }
 
     private Collection<V> valuesHashMap() {
-        List<V> list=new LinkedList<>();
-        Iterator<Entry<K,V>> iterator=entrySet().iterator();
-        Entry<K,V> entry;
+        List<V> list = new LinkedList<>();
+        Iterator<Entry<K, V>> iterator = entrySet().iterator();
+        Entry<K, V> entry;
 
-        while (iterator.hasNext()){
-            entry=iterator.next();
-           list.add(entry.getValue());
+        while (iterator.hasNext()) {
+            entry = iterator.next();
+            list.add(entry.getValue());
         }
         return list;
     }
 
 
     private boolean containsKeyMyHashMap(K key) {
-        if (key == null) throw new NullPointerException("Input key is null");
-
-        return getMyHashMap(key) != null;
+        return keySetHashMap().contains(key);
     }
 
     private boolean containsValueMyHashMap(V value) {
-        Collection<V> set = valuesHashMap();
-        for (V object : set) {
-            if (object.equals(value)) {
-                return true;
-            }
-        }
-        return false;
+        return valuesHashMap().contains(value);
     }
 
     public int size() {
@@ -138,9 +138,7 @@ public class MyHashMap<K,V> implements Map {
     }
 
 
-    private int findHashTable(Object key) {
-        return key.hashCode() % hashMap.length;
-    }
+
 
     @Override
     public boolean isEmpty() {
@@ -152,6 +150,7 @@ public class MyHashMap<K,V> implements Map {
     public boolean containsKey(Object key) {
         return containsKeyMyHashMap((K) key);
     }
+
     @SuppressWarnings("unchecked")
     @Override
     public boolean containsValue(Object value) {
@@ -162,13 +161,15 @@ public class MyHashMap<K,V> implements Map {
     @SuppressWarnings("unchecked")
     @Override
     public Object get(Object key) {
-        return getMyHashMap((K)key);
+        return getMyHashMap((K) key);
     }
+
     @SuppressWarnings("unchecked")
     @Override
     public Object put(Object key, Object value) {
-        return update((K) key, (V) value) ? update((K) key, (V) value) : add((K) key, (V) value);
+        return add((K)key,(V)value);
     }
+
     @SuppressWarnings("unchecked")
     @Override
     public Object remove(Object key) {
@@ -185,6 +186,7 @@ public class MyHashMap<K,V> implements Map {
     public Collection values() {
         return valuesHashMap();
     }
+
     @SuppressWarnings("unchecked")
     @Override
     public void putAll(Map m) {
@@ -196,6 +198,7 @@ public class MyHashMap<K,V> implements Map {
 
     @Override
     public void clear() {
-        init();
+        Arrays.fill(hashMap, null);
+        count = 0;
     }
 }
