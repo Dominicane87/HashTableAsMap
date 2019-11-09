@@ -10,18 +10,23 @@ public class MyHashMap<K, V> implements Map {
     private MyObjectEntry<K,V>[] hashMap;
     private int count = 0;
 
-    @SuppressWarnings("unchecked")
+
     MyHashMap() {
-       hashMap=new MyObjectEntry[amountBuckets];
+       initMyHashMap();
+    }
+
+    @SuppressWarnings("unchecked")
+    private void initMyHashMap(){
+        hashMap=(MyObjectEntry<K,V>[])new MyObjectEntry[amountBuckets];
     }
 
 
-    @SuppressWarnings("unchecked")
+
     private void increaseMyHashMap() {
         count=0;
         Set<Entry<K, V>> set = entrySet();
         amountBuckets = amountBuckets * 2;
-        hashMap =new MyObjectEntry[amountBuckets];
+        initMyHashMap();
         for (Entry<K, V> entry : set) {
             this.add(entry.getKey(), entry.getValue());
         }
@@ -33,7 +38,7 @@ public class MyHashMap<K, V> implements Map {
         return hashMap[findHashTable(key)];
     }
 
-    @SuppressWarnings("unchecked")
+
     private V add(K key, V value) {
         if (size() > CAPACITY_LIMIT * amountBuckets * DEEPNESS_LIST) increaseMyHashMap();
 
@@ -57,7 +62,7 @@ public class MyHashMap<K, V> implements Map {
             count++;
             return null;
         }
-    @SuppressWarnings("unchecked")
+
     private V getMyHashMap(K key) {
         MyObjectEntry<K,V> first =getFirstElement(key);
         while (first!=null) {
@@ -69,7 +74,7 @@ public class MyHashMap<K, V> implements Map {
         }
         return null;
     }
-    @SuppressWarnings("unchecked")
+
     private V removeMyHashMap(K key) {
         MyObjectEntry<K, V> first = getFirstElement(key);
         MyObjectEntry<K, V> prev = first;
@@ -93,7 +98,7 @@ public class MyHashMap<K, V> implements Map {
         }
         return null;
     }
-    @SuppressWarnings("unchecked")
+
     public Set<Entry<K, V>> entrySet() {
         Set<Entry<K, V>> set = new HashSet<>();
 
@@ -152,32 +157,32 @@ public class MyHashMap<K, V> implements Map {
         return isEmptyMyHashMap();
     }
 
-    @SuppressWarnings("unchecked")
+
     @Override
     public boolean containsKey(Object key) {
         return containsKeyMyHashMap((K) key);
     }
 
-    @SuppressWarnings("unchecked")
+
     @Override
     public boolean containsValue(Object value) {
         return containsValueMyHashMap((V) value);
     }
 
 
-    @SuppressWarnings("unchecked")
+
     @Override
     public Object get(Object key) {
         return getMyHashMap((K) key);
     }
 
-    @SuppressWarnings("unchecked")
+
     @Override
     public Object put(Object key, Object value) {
         return add((K)key,(V)value);
     }
 
-    @SuppressWarnings("unchecked")
+
     @Override
     public Object remove(Object key) {
         return removeMyHashMap((K) key);
@@ -194,7 +199,7 @@ public class MyHashMap<K, V> implements Map {
         return valuesHashMap();
     }
 
-    @SuppressWarnings("unchecked")
+
     @Override
     public void putAll(Map m) {
         Set<Map.Entry<K, V>> set = (Set<Map.Entry<K, V>>) m.entrySet();

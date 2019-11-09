@@ -12,11 +12,11 @@ public class MyObjectEntry<K, V> {
 
     }
 
-    MyObjectEntry getNext() {
+    MyObjectEntry<K,V> getNext() {
         return next;
     }
 
-    void setNext(MyObjectEntry next) {
+    void setNext(MyObjectEntry<K,V> next) {
         this.next = next;
     }
 
@@ -53,16 +53,4 @@ public class MyObjectEntry<K, V> {
         return key + "=" + value;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof MyObjectEntry)) return false;
-        MyObjectEntry<?, ?> that = (MyObjectEntry<?, ?>) o;
-        return getKey().equals(that.getKey());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getKey(), getValue(), getNext());
-    }
 }
