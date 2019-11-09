@@ -14,7 +14,7 @@ public class MyHashMapTest {
 
 
     @Test
-    public void increaseMap() {
+    public void increaseMapTest() {
         for (int i=0;i<100;i++) {
             myMap.put(i,1);
             map.put(i,1);
@@ -23,7 +23,7 @@ public class MyHashMapTest {
         assertEquals(map.size(),myMap.size());
     }
     @Test
-    public void containsKey() {
+    public void containsKeyTest() {
         assertFalse(myMap.containsKey("1"));
         assertFalse(map.containsKey("1"));
         myMap.put("1", "1");
@@ -37,7 +37,7 @@ public class MyHashMapTest {
     }
 
     @Test
-    public void containsValue() {
+    public void containsValueTest() {
         assertFalse(myMap.containsValue("1"));
         assertFalse(map.containsValue("1"));
         myMap.put("1", "1");
@@ -53,7 +53,7 @@ public class MyHashMapTest {
     }
 
     @Test
-    public void get() {
+    public void getTest() {
         myMap.put("1", "1");
         map.put("1", "1");
         assertEquals(map.get("1"), myMap.get("1"));
@@ -65,7 +65,7 @@ public class MyHashMapTest {
     }
 
     @Test
-    public void put() {
+    public void putTest() {
         myMap.put("1", "1");
         map.put("1", "1");
         myMap.put("1", "2");
@@ -81,7 +81,7 @@ public class MyHashMapTest {
     }
 
     @Test
-    public void remove() {
+    public void removeTest() {
         myMap.put("1", "1");
         map.put("1", "1");
 
@@ -105,7 +105,7 @@ public class MyHashMapTest {
     }
 
     @Test
-    public void keySet() {
+    public void keySetTest() {
         myMap.put("1", "1");
         map.put("1", "1");
         myMap.put("2", "1");
@@ -114,7 +114,7 @@ public class MyHashMapTest {
     }
 
     @Test
-    public void values() {
+    public void valuesTest() {
         myMap.put("1", "1");
         map.put("1", "1");
         myMap.put("2", "1");
@@ -129,7 +129,7 @@ public class MyHashMapTest {
 
 
     @Test
-    public void putAll() {
+    public void putAllTest() {
         Map<Object, Object> tmp = new HashMap<>();
         tmp.put("1","1");
         tmp.put("2","1");
@@ -139,7 +139,7 @@ public class MyHashMapTest {
     }
 
     @Test
-    public void clear() {
+    public void clearTest() {
         myMap.put("1", "1");
         map.put("1", "1");
         myMap.put("2", "1");
