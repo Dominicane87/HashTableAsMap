@@ -18,6 +18,7 @@ public class MyHashMap<K, V> implements Map {
 
     @SuppressWarnings("unchecked")
     private void increaseMyHashMap() {
+        count=0;
         Set<Entry<K, V>> set = entrySet();
         amountBuckets = amountBuckets * 2;
         hashMap =new MyObjectEntry[amountBuckets];
@@ -25,17 +26,20 @@ public class MyHashMap<K, V> implements Map {
             this.add(entry.getKey(), entry.getValue());
         }
     }
-    private MyObjectEntry<K,V> findHashTable(Object key) {
-        return hashMap[key.hashCode() % hashMap.length];
+    private int findHashTable(Object key) {
+        return key==null?1:key.hashCode()%amountBuckets;
+    }
+    private MyObjectEntry<K,V> getFirstElement(Object key){
+        return hashMap[findHashTable(key)];
     }
 
     @SuppressWarnings("unchecked")
     private V add(K key, V value) {
         if (size() > CAPACITY_LIMIT * amountBuckets * DEEPNESS_LIST) increaseMyHashMap();
 
-           MyObjectEntry<K,V> first =findHashTable(key);
+           MyObjectEntry<K,V> first =getFirstElement(key);
            if (first==null){
-               hashMap[key.hashCode() % hashMap.length]=new MyObjectEntry<>(key,value);
+               hashMap[findHashTable(key)]=new MyObjectEntry<>(key,value);
                count++;
                return null;
            }
@@ -50,15 +54,15 @@ public class MyHashMap<K, V> implements Map {
                first=first.getNext();
            }
            prev.setNext(new MyObjectEntry<>(key,value));
-//           first=new MyObjectEntry<>(key,value);
             count++;
             return null;
         }
     @SuppressWarnings("unchecked")
     private V getMyHashMap(K key) {
-        MyObjectEntry<K,V> first =findHashTable(key);
+        MyObjectEntry<K,V> first =getFirstElement(key);
         while (first!=null) {
-            if (first.getKey().equals(key)){
+
+            if ((first.getKey()==key)||(first.getKey().equals(key))){
                 return first.getValue();
             }
             first=first.getNext();
@@ -67,18 +71,21 @@ public class MyHashMap<K, V> implements Map {
     }
     @SuppressWarnings("unchecked")
     private V removeMyHashMap(K key) {
-        MyObjectEntry<K, V> first = findHashTable(key);
+        MyObjectEntry<K, V> first = getFirstElement(key);
         MyObjectEntry<K, V> prev = first;
         MyObjectEntry<K, V> curr = first;
         while (curr!=null) {
+            //if first element
             if (curr.getKey().equals(key)&(curr==first)){
-                hashMap[key.hashCode() % hashMap.length] =null;
+                hashMap[findHashTable(key)] =null;
+                count--;
                 return first.getValue();
             }
 
             if (curr.getKey().equals(key)){
                 V old=curr.getValue();
-                prev=curr.getNext();
+                prev.setNext(curr.getNext());
+                count--;
                 return old;
             }
             prev=curr;

@@ -5,11 +5,11 @@ import java.util.Objects;
 public class MyObjectEntry<K, V> {
     private K key;
     private V value;
-    private MyObjectEntry next;
-    private boolean isNull;
+    private MyObjectEntry<K,V> next;
+
 
     MyObjectEntry() {
-        isNull=true;
+
     }
 
     MyObjectEntry getNext() {
@@ -24,7 +24,6 @@ public class MyObjectEntry<K, V> {
         this.key = key;
         this.value = value;
         next=null;
-        isNull=false;
     }
 
     public boolean equalsKey(K key) {
@@ -50,20 +49,20 @@ public class MyObjectEntry<K, V> {
     }
 
     @Override
+    public String toString() {
+        return key + "=" + value;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof MyObjectEntry)) return false;
-        MyObjectEntry that = (MyObjectEntry) o;
+        MyObjectEntry<?, ?> that = (MyObjectEntry<?, ?>) o;
         return getKey().equals(that.getKey());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getKey());
-    }
-
-    @Override
-    public String toString() {
-        return key + "=" + value;
+        return Objects.hash(getKey(), getValue(), getNext());
     }
 }
